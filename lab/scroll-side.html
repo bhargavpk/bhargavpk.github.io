@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scrollable Card Panel</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: sans-serif;
+      background-color: #f5f5dc;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    .carousel-wrapper {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .carousel {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 0 2rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .card {
+      flex: 0 0 80%;
+      max-width: 80%;
+      scroll-snap-align: center;
+      background: #eae6d9;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .card.blur {
+      filter: blur(2px);
+      opacity: 0.6;
+      transform: scale(0.95);
+    }
+
+    /* Slide animations */
+    .card.slide-in-right {
+      animation: slideInRight 0.4s ease;
+    }
+
+    .card.slide-in-left {
+      animation: slideInLeft 0.4s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(30%);
+        opacity: 0.7;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        transform: translateX(-30%);
+        opacity: 0.7;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .arrow-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.3);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 0.4rem 0.6rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .arrow-left {
+      left: 10px;
+    }
+
+    .arrow-right {
+      right: 10px;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background-color: #bbb;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: #333;
+      transform: scale(1.8);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Projects</h1>
+
+  <div class="carousel-wrapper">
+    <button class="arrow-btn arrow-left" id="prevBtn">&#10094;</button>
+
+    <div class="carousel" id="carousel">
+      <div class="card">Project 1: Personal Portfolio</div>
+      <div class="card">Project 2: Weather App</div>
+      <div class="card">Project 3: Task Manager</div>
+      <div class="card">Project 4: Blog Template</div>
+      <div class="card">Project 5: Quiz Game</div>
+    </div>
+
+    <button class="arrow-btn arrow-right" id="nextBtn">&#10095;</button>
+
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <script>
+    const carousel = document.getElementById("carousel");
+    const cards = carousel.querySelectorAll(".card");
+    const nextBtn = document.getElementById("nextBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const dotsContainer = document.getElementById("dots");
+
+    let currentIndex = 0;
+
+    // Create dots
+    cards.forEach((_, i) => {
+      const dot = document.createElement("div");
+      dot.classList.add("dot");
+      if (i === 0) dot.classList.add("active");
+      dotsContainer.appendChild(dot);
+    });
+
+    const dots = dotsContainer.querySelectorAll(".dot");
+
+    function updateCarousel(index, direction = null) {
+      const cardWidth = cards[0].offsetWidth + 16;
+      carousel.scrollTo({
+        left: index * cardWidth,
+        behavior: "smooth"
+      });
+
+      cards.forEach((card, i) => {
+        card.classList.remove("slide-in-left", "slide-in-right");
+        card.classList.toggle("blur", i !== index);
+        if (i === index && direction) {
+          card.classList.add(direction === 'right' ? 'slide-in-right' : 'slide-in-left');
+          setTimeout(() => {
+            card.classList.remove('slide-in-right', 'slide-in-left');
+          }, 400);
+        }
+      });
+
+      dots.forEach(dot => dot.classList.remove("active"));
+      dots[index].classList.add("active");
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < cards.length - 1) {
+        currentIndex++;
+        updateCarousel(currentIndex, 'right');
+      }
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel(currentIndex, 'left');
+      }
+    });
+
+    carousel.addEventListener("scroll", () => {
+      const cardWidth = cards[0].offsetWidth + 16;
+      const index = Math.round(carousel.scrollLeft / cardWidth);
+      if (index !== currentIndex) {
+        const direction = index > currentIndex ? 'right' : 'left';
+        currentIndex = index;
+        updateCarousel(currentIndex, direction);
+      }
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") nextBtn.click();
+      else if (e.key === "ArrowLeft") prevBtn.click();
+    });
+
+    // Initial setup
+    updateCarousel(currentIndex);
+  </script>
+
+</body>
+</html>

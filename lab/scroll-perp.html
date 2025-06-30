@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Card Slider with Blurred Neighbors (Fixed Navigation)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      background: #f3f4f8;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .slider {
+      width: 400px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(60, 60, 100, 0.08);
+      background: #e9eaf0;
+      padding: 32px 0;
+      scrollbar-width: none;
+      outline: none;
+      scroll-snap-type: x mandatory;
+      scroll-padding-left: 40px;
+      scroll-padding-right: 40px;
+    }
+    .slider:focus {
+      outline: 2px solid #86a8e7;
+    }
+    .slider::-webkit-scrollbar {
+      display: none;
+    }
+    .cards {
+      display: flex;
+      gap: 0;
+      padding: 0 40px;
+    }
+    .card {
+      flex: 0 0 320px;
+      height: 180px;
+      background: linear-gradient(135deg, #7f7fd5 0%, #86a8e7 100%);
+      color: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 500;
+      scroll-snap-align: center;
+      transition:
+        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.4s,
+        filter 0.4s,
+        opacity 0.4s;
+      cursor: pointer;
+      user-select: none;
+      margin-right: 0;
+      opacity: 0.6;
+      filter: blur(3px) grayscale(0.2);
+      transform: scale(0.92);
+      z-index: 1;
+      flex-shrink: 0;
+    }
+    .card.active {
+      opacity: 1;
+      filter: none;
+      transform: scale(1.05);
+      z-index: 3;
+      box-shadow: 0 8px 32px rgba(60, 60, 100, 0.16);
+      background: linear-gradient(135deg, #86a8e7 0%, #91eac9 100%);
+    }
+    .card.neighbor {
+      opacity: 0.8;
+      filter: blur(2px) grayscale(0.1);
+      transform: scale(0.98);
+      z-index: 2;
+    }
+    @media (max-width: 500px) {
+      .slider {
+        width: 95vw;
+      }
+      .cards {
+        padding: 0 10vw;
+      }
+      .card {
+        flex: 0 0 80vw;
+        font-size: 1.1rem;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="slider" tabindex="0" id="slider" aria-label="Card slider">
+    <div class="cards" id="cards">
+      <div class="card">Card 1</div>
+      <div class="card">Card 2</div>
+      <div class="card">Card 3</div>
+      <div class="card">Card 4</div>
+      <div class="card">Card 5</div>
+      <div class="card">Card 6</div>
+      <div class="card">Card 7</div>
+    </div>
+  </div>
+
+  <script>
+    const slider = document.getElementById('slider');
+    const cards = Array.from(document.querySelectorAll('.card'));
+    let currentIndex = 0;
+    let scrollTimeout;
+
+    function setActiveClasses(idx) {
+      cards.forEach((card, i) => {
+        card.classList.remove('active', 'neighbor');
+        if (i === idx) {
+          card.classList.add('active');
+        } else if (i === idx - 1 || i === idx + 1) {
+          card.classList.add('neighbor');
+        }
+      });
+    }
+
+    function scrollToCard(idx) {
+      const card = cards[idx];
+      if (!card) return;
+      // Center the card in the slider
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const sliderCenter = slider.offsetWidth / 2;
+      slider.scrollTo({
+        left: cardCenter - sliderCenter,
+        behavior: 'smooth',
+      });
+      // Do NOT call setActiveClasses here; let scroll event handle it
+    }
+
+    function updateActiveCard() {
+      const sliderRect = slider.getBoundingClientRect();
+      let minDiff = Infinity;
+      let activeIdx = 0;
+      cards.forEach((card, idx) => {
+        const cardRect = card.getBoundingClientRect();
+        const cardCenter = cardRect.left + cardRect.width / 2;
+        const sliderCenter = sliderRect.left + sliderRect.width / 2;
+        const diff = Math.abs(cardCenter - sliderCenter);
+        if (diff < minDiff) {
+          minDiff = diff;
+          activeIdx = idx;
+        }
+      });
+      currentIndex = activeIdx;
+      setActiveClasses(activeIdx);
+    }
+
+    // Debounced scroll handler
+    slider.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        updateActiveCard();
+      }, 100);
+    });
+
+    // Keyboard navigation
+    slider.addEventListener('keyup', (e) => {
+      if (e.key === 'ArrowRight') {
+        if (currentIndex < cards.length - 1) {
+          currentIndex++;
+          console.log('Sliding right')
+          scrollToCard(currentIndex);
+        }
+        e.preventDefault();
+      } else if (e.key === 'ArrowLeft') {
+        if (currentIndex > 0) {
+          currentIndex--;
+          console.log('Sliding left')
+          scrollToCard(currentIndex);
+        }
+        e.preventDefault();
+      }
+    });
+
+    // Initialize on load
+    window.addEventListener('load', () => {
+      scrollToCard(0);
+      setTimeout(updateActiveCard, 400); // ensure classes are set after initial scroll
+      slider.focus();
+    });
+  </script>
+</body>
+</html>

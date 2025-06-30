@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF Preview Download</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .pdf-container {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .pdf-container:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .instruction {
+      margin-top: 1rem;
+      color: #444;
+    }
+
+    iframe {
+      width: 300px;
+      height: 200px;
+      pointer-events: none; /* Prevents user from scrolling or interacting */
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Preview PDF</h1>
+
+  <a href="document.pdf" download>
+    <div class="pdf-container">
+      <iframe src="document.pdf#page=1"></iframe>
+    </div>
+  </a>
+
+  <p class="instruction">Click the preview to download the full PDF</p>
+
+</body>
+</html>

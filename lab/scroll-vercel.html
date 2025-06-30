@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Card Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .panel-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px; /* Reduced to show only one card */
+            margin: 0 auto;
+        }
+
+        .scroll-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+        }
+
+        .card-panel {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            /* Center the first card */
+            padding-left: 50px;
+            padding-right: 50px;
+        }
+
+        .card-panel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .card {
+            flex: 0 0 300px;
+            height: 400px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            scroll-snap-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-right: 20px;
+        }
+
+        .card:last-child {
+            margin-right: 0;
+        }
+
+        .card.blur {
+            filter: blur(2px);
+            opacity: 0.6;
+            transform: scale(0.9);
+        }
+
+        .card.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .card:nth-child(1) .card-icon { background: linear-gradient(45deg, #ff6b6b, #ee5a24); }
+        .card:nth-child(2) .card-icon { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
+        .card:nth-child(3) .card-icon { background: linear-gradient(45deg, #45b7d1, #96c93d); }
+        .card:nth-child(4) .card-icon { background: linear-gradient(45deg, #f093fb, #f5576c); }
+        .card:nth-child(5) .card-icon { background: linear-gradient(45deg, #4facfe, #00f2fe); }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #333;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button.prev {
+            left: -70px; /* Moved outside the container */
+        }
+
+        .nav-button.next {
+            right: -70px; /* Moved outside the container */
+        }
+
+        .nav-button:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-button:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px; /* Changed from 50% to 2px for square with slight rounding */
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.3);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .panel-container {
+                max-width: 320px;
+            }
+
+            .card {
+                flex: 0 0 250px;
+                height: 350px;
+                padding: 25px;
+            }
+
+            .card-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .card h3 {
+                font-size: 1.3rem;
+            }
+
+            .nav-button {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .nav-button.prev {
+                left: -60px;
+            }
+
+            .nav-button.next {
+                right: -60px;
+            }
+
+            .card-panel {
+                padding-left: 35px;
+                padding-right: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .panel-container {
+                max-width: 280px;
+            }
+
+            .card {
+                flex: 0 0 220px;
+                height: 320px;
+                padding: 20px;
+            }
+
+            .card-panel {
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+
+            .nav-button.prev {
+                left: -50px;
+            }
+
+            .nav-button.next {
+                right: -50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="panel-container">
+        <div class="scroll-container">
+            <div class="card-panel" id="cardPanel">
+                <div class="card">
+                    <div class="card-icon">🚀</div>
+                    <h3>Innovation</h3>
+                    <p>Discover cutting-edge solutions that push the boundaries of what's possible. Our innovative approach transforms ideas into reality.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💡</div>
+                    <h3>Creativity</h3>
+                    <p>Unleash your creative potential with tools and resources designed to inspire and empower your artistic vision.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Precision</h3>
+                    <p>Achieve your goals with pinpoint accuracy. Our precision-focused methodology ensures optimal results every time.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Performance</h3>
+                    <p>Experience lightning-fast performance that keeps you ahead of the competition. Speed meets reliability in perfect harmony.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🌟</div>
+                    <h3>Excellence</h3>
+                    <p>Strive for excellence in everything you do. Our commitment to quality ensures exceptional outcomes and lasting success.</p>
+                </div>
+            </div>
+        </div>
+        <button class="nav-button prev" id="prevBtn">&lt;</button>
+        <button class="nav-button next" id="nextBtn">&gt;</button>
+        <div class="dots-container" id="dotsContainer"></div>
+    </div>
+
+    <script>
+        class CardPanel {
+            constructor() {
+                this.panel = document.getElementById('cardPanel');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.dotsContainer = document.getElementById('dotsContainer');
+                this.cards = this.panel.querySelectorAll('.card');
+                this.currentIndex = 0;
+                this.cardWidth = 320; // card width + margin
+                this.isScrolling = false;
+
+                this.init();
+            }
+
+            init() {
+                this.createDots();
+                this.updateCardStates();
+                this.bindEvents();
+                this.updateNavButtons();
+                // Center the first card initially
+                this.goToCard(0);
+            }
+
+            createDots() {
+                this.cards.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    if (index === 0) dot.classList.add('active');
+                    dot.addEventListener('click', () => this.goToCard(index));
+                    this.dotsContainer.appendChild(dot);
+                });
+                this.dots = this.dotsContainer.querySelectorAll('.dot');
+            }
+
+            bindEvents() {
+                // Navigation buttons
+                this.prevBtn.addEventListener('click', () => this.prevCard());
+                this.nextBtn.addEventListener('click', () => this.nextCard());
+
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') this.prevCard();
+                    if (e.key === 'ArrowRight') this.nextCard();
+                });
+
+                // Touch/swipe support
+                let startX = 0;
+                let startY = 0;
+                let isScrolling = false;
+
+                this.panel.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    isScrolling = false;
+                }, { passive: true });
+
+                this.panel.addEventListener('touchmove', (e) => {
+                    if (!startX || !startY) return;
+
+                    const diffX = startX - e.touches[0].clientX;
+                    const diffY = startY - e.touches[0].clientY;
+
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+                        isScrolling = true;
+                    }
+                }, { passive: true });
+
+                this.panel.addEventListener('touchend', (e) => {
+                    if (!startX || !isScrolling) return;
+
+                    const diffX = startX - e.changedTouches[0].clientX;
+
+                    if (Math.abs(diffX) > 50) {
+                        if (diffX > 0) {
+                            this.nextCard();
+                        } else {
+                            this.prevCard();
+                        }
+                    }
+
+                    startX = 0;
+                    startY = 0;
+                    isScrolling = false;
+                }, { passive: true });
+
+                // Scroll event for updating states
+                this.panel.addEventListener('scroll', () => {
+                    if (!this.isScrolling) {
+                        this.updateCurrentIndex();
+                    }
+                });
+            }
+
+            updateCurrentIndex() {
+                const scrollLeft = this.panel.scrollLeft;
+                const newIndex = Math.round(scrollLeft / this.cardWidth);
+                
+                if (newIndex !== this.currentIndex && newIndex >= 0 && newIndex < this.cards.length) {
+                    this.currentIndex = newIndex;
+                    this.updateDots();
+                    this.updateCardStates();
+                    this.updateNavButtons();
+                }
+            }
+
+            goToCard(index) {
+                if (index < 0 || index >= this.cards.length || index === this.currentIndex) return;
+                
+                this.isScrolling = true;
+                this.currentIndex = index;
+                this.panel.scrollTo({
+                    left: index * this.cardWidth,
+                    behavior: 'smooth'
+                });
+
+                setTimeout(() => {
+                    this.isScrolling = false;
+                    this.updateDots();
+                    this.updateCardStates();
+                    this.updateNavButtons();
+                }, 300);
+            }
+
+            prevCard() {
+                if (this.currentIndex > 0) {
+                    this.goToCard(this.currentIndex - 1);
+                }
+            }
+
+            nextCard() {
+                if (this.currentIndex < this.cards.length - 1) {
+                    this.goToCard(this.currentIndex + 1);
+                }
+            }
+
+            updateDots() {
+                this.dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === this.currentIndex);
+                });
+            }
+
+            updateCardStates() {
+                this.cards.forEach((card, index) => {
+                    const isActive = index === this.currentIndex;
+                    const isPrevious = index === this.currentIndex - 1;
+                    const isNext = index === this.currentIndex + 1;
+                    const isAdjacent = isPrevious || isNext;
+                    
+                    // Remove all classes first
+                    card.classList.remove('blur', 'hidden');
+                    
+                    if (isActive) {
+                        // Current card - fully visible, no effects
+                        return;
+                    } else if (isAdjacent) {
+                        // Adjacent cards - slightly visible and blurred
+                        card.classList.add('blur');
+                    } else {
+                        // All other cards - completely hidden
+                        card.classList.add('hidden');
+                    }
+                });
+            }
+
+            updateNavButtons() {
+                this.prevBtn.style.opacity = this.currentIndex === 0 ? '0.5' : '1';
+                this.nextBtn.style.opacity = this.currentIndex === this.cards.length - 1 ? '0.5' : '1';
+                this.prevBtn.style.pointerEvents = this.currentIndex === 0 ? 'none' : 'auto';
+                this.nextBtn.style.pointerEvents = this.currentIndex === this.cards.length - 1 ? 'none' : 'auto';
+            }
+        }
+
+        // Initialize the card panel when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new CardPanel();
+        });
+    </script>
+</body>
+</html>

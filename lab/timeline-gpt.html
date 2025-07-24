@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Curved Hemisphere Timeline</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 4rem 1rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .timeline-arc {
+      position: relative;
+      width: 90vw;
+      max-width: 800px;
+      height: 300px;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      perspective: 1000px;
+    }
+
+    .milestone {
+      position: absolute;
+      bottom: 0;
+      transform-origin: bottom center;
+      transition: transform 0.3s ease, z-index 0.3s;
+      text-align: center;
+      color: #444;
+    }
+
+    .milestone .dot {
+      width: 20px;
+      height: 20px;
+      background: #666;
+      border-radius: 50%;
+      margin: 0 auto 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .milestone:hover {
+      z-index: 10;
+    }
+
+    .milestone:hover .dot {
+      background: #000;
+      transform: scale(1.2);
+    }
+
+    .milestone .label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    /* Position & scale each milestone manually to simulate arc */
+
+    .milestone:nth-child(1) {
+      left: 5%;
+      transform: translateY(-20%) scale(0.7);
+      z-index: 1;
+    }
+
+    .milestone:nth-child(2) {
+      left: 25%;
+      transform: translateY(-40%) scale(0.85);
+      z-index: 2;
+    }
+
+    .milestone:nth-child(3) {
+      left: 45%;
+      transform: translateY(-60%) scale(1.1);
+      z-index: 3;
+    }
+
+    .milestone:nth-child(4) {
+      left: 65%;
+      transform: translateY(-40%) scale(0.85);
+      z-index: 2;
+    }
+
+    .milestone:nth-child(5) {
+      left: 85%;
+      transform: translateY(-20%) scale(0.7);
+      z-index: 1;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="timeline-arc">
+    <div class="milestone">
+      <div class="dot"></div>
+      <div class="label">Start</div>
+    </div>
+    <div class="milestone">
+      <div class="dot"></div>
+      <div class="label">Learning</div>
+    </div>
+    <div class="milestone">
+      <div class="dot"></div>
+      <div class="label">Project</div>
+    </div>
+    <div class="milestone">
+      <div class="dot"></div>
+      <div class="label">Internship</div>
+    </div>
+    <div class="milestone">
+      <div class="dot"></div>
+      <div class="label">Present</div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -741,8 +741,9 @@
         }
 
         .card img {
-        max-height: 175px;
-        width: auto;
+            /* max-height: 175px; */
+            max-height: 100%;
+            width: auto;
         }
 
         .nav-button {
@@ -888,7 +889,7 @@
             <div class="w-full max-w-4xl">
 
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-left mb-12 text-gray-800 tracking-tight">
-              Projects
+              Gallery
             </h1>
 
 
@@ -901,77 +902,33 @@
 
                     <div class="card">
                         
-                        <h2>Tree Gradient Coding</h2>
-                        <a href="documents/mtp-brief.pdf" download>
-                            <div class="pdf-container">
-                            <iframe src="documents/mtp-brief.pdf#page=10"></iframe>
-                            </div>
-                        </a>
-                        <br>
-                        <p>
-                            <b>Type</b>: Research (Master's Thesis)<br>
-                            <b>Skills</b>: Distrbuted computing, MPI, AWS, Python <br>
-                            <br>
-                            <span>
-                                Implemented Tree Gradient Coding, a distributed computing method to compute gradient (in gradient descent) on AWS EC2. Analyzed different tree topologies for the distrbuted method
-                            </span>
-                        </p>
+                        <img src="images/hobbies/art1.jpg" />
 
                     </div>
 
 
                     <div class="card">
                         
-                        <h2>SplayNet</h2>
-                        <a href="documents/btp-brief.pdf" download>
-                            <div class="pdf-container">
-                            <iframe src="documents/btp-brief.pdf#page=16"></iframe>
-                            </div>
-                        </a>
-                        <br>
-                        <p>
-                            <b>Type</b>: Research (Bachelor's Thesis)<br>
-                            <b>Skills</b>: Distrbuted algorithms, Data Structures, Java <br>
-                            <br>
-                            <span>
-                                Simulated a distributed, self-adjusting network based on Splay Trees. Explored behaviour of the distributed algorithm
-                            </span>
-                        </p>
+                        <img src="images/hobbies/art2.jpg" />
 
                     </div>
 
-
                     <div class="card">
-                        <h2>Yorticle</h2>
-                        <a href="https://github.com/bhargavpk/Yorticle" target="_blank">
-                          <img src="documents/yorticle.png" alt="Home page" />
-                        </a>
-                        <br>
-                        <p>
-                            <b>Type</b>: Dev<br>
-                            <b>Skills</b>: Full-stack, MERN, Javascript <br>
-                            <br>
-                            <span>
-                                Developed a site that allows users to write and publish articles<br>
-                                Includes an in-built text editor with auto-complete capability for convenience
-                            </span>
-                        </p>
+                        
+                        <img src="images/hobbies/art3.jpg" />
+
                     </div>
 
+                    <div class="card">
+                        
+                        <img src="images/hobbies/art4.jpg" />
+
+                    </div>
 
                     <div class="card">
-                        <h2>Container image optimization</h2>
-                        <img src="documents/ibm-research.png" />
-                        <br>
-                        <p>
-                            <b>Type</b>: Research (Internship, IBM)<br>
-                            <b>Skills</b>: Golang, Docker <br>
-                            <br>
-                            <span>
-                                Proposed algorithms to improve storage space of multiple container images. Demonstrated results on popular microservice images <br>
-                                Algorithms filed for patent
-                            </span>
-                        </p>
+                        
+                        <img src="images/hobbies/art5.jpg" />
+
                     </div>
 
                   </div>
@@ -1006,7 +963,7 @@
                 this.dotsContainer = document.getElementById('dotsContainer');
                 this.cards = this.panel.querySelectorAll('.card');
                 this.currentIndex = 0;
-                this.cardWidth = 320; // card width + margin
+                this.cardWidth = 350; // card width + margin
                 this.isScrolling = false;
 
                 this.init();

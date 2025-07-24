@@ -615,6 +615,10 @@ video {
       font-weight: bold;
       margin-bottom: 0.3rem;
       font-size: larger;
+
+      opacity: 0;
+      animation: fadeIn 1s ease-in forwards;
+      animation-delay: 0.3s; /* optional delay */
     }
 
     .timeline-description {
@@ -628,6 +632,18 @@ video {
         vertical-align: middle;
     }
 
+    #fade-in {
+      opacity: 0;
+      animation: fadeIn 0.5s ease-in forwards;
+      animation-delay: 0s; /* optional delay */
+    }
+
+    @keyframes fadeIn {
+      to {
+          opacity: 1;
+        }
+    }
+
 
     </style>
   </head>
@@ -638,7 +654,9 @@ video {
     <div class="max-w-6xl mx-auto">
       <div class="flex flex-col items-center justify-center min-h-[60vh]">
         <div class="w-full max-w-4xl mb-8">
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-left mb-12 text-gray-800 tracking-tight">
+          <h1 
+          id="fade-in"
+          class="text-4xl md:text-5xl lg:text-6xl font-bold text-left mb-12 text-gray-800 tracking-tight">
             Timeline
           </h1>
           
